@@ -25,6 +25,13 @@ class SlackIntegration:
             "e_lazar": ELazarAgent(config),
             "client_success": ClientSuccessAgent(config)
         }
+        # Get bot user ID
+        try:
+            self.bot_user_id = self.client.auth_test()["user_id"]
+            logging.info(f"Bot user ID: {self.bot_user_id}")
+        except Exception as e:
+            logging.error(f"Failed to get bot user ID: {e}")
+            self.bot_user_id = None
 
     async def handle_event(self, request) -> str:
         """
@@ -81,7 +88,11 @@ class SlackIntegration:
             return "This channel is not associated with an agent."
 
         # Extract query
-        query = text.replace(f"<@{self.config.slack_bot_token.split('-')[1]}>", "").strip()  # Remove @mention
+        if self.bot_user_id:
+            query = text.replace(f"<@{self.bot_user_id}>", "").strip()
+        else:
+            # Fallback: assume the mention is at the start
+            query = text.split(">", 1)[-1].strip() if ">" in text else text.strip()
 
         # For client_success, extract client_id if present
         client_id = None
