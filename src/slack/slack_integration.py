@@ -33,8 +33,12 @@ class SlackIntegration:
         body = await request.body()
         headers = dict(request.headers)
 
-        data = json.loads(body.decode('utf-8'))
-        print(f"Parsed data: {data}")  # Debug
+        try:
+            data = json.loads(body.decode('utf-8'))
+            print(f"Parsed data: {data}")
+        except Exception as e:
+            print(f"JSON load failed: {e}, body: {body.decode('utf-8')}")
+            return "json failed"
 
         if data.get("type") == "url_verification":
             print("URL verification")  # Debug
