@@ -10,12 +10,10 @@ The system includes:
 - **Client Success Agent**: Provides client-specific answers without data contamination.
 
 ## Data Sources
-- **Fireflies API** (paid): Meeting transcripts, summaries, metadata.
+- **Nylas API** (free tier available): Calendar events (meeting metadata like titles, descriptions, participants).
 - **AssemblyAI** (free tier: 5 hours/month): For transcribing uploaded audio files of meetings.
 - **Google Drive**: Documents, presentations, images.
 - **Manual Uploads**: Text files or audio files (auto-transcribed).
-
-For cost-free operation, use AssemblyAI for meeting transcripts by uploading audio recordings manually.
 - **Slack Integration**: Dedicated channels per agent, plain text responses.
 - **Security**: Strict dataset separation, read-only access, OAuth for APIs.
 - **LLM**: Uses GPT-4 for response generation.
@@ -35,15 +33,16 @@ For cost-free operation, use AssemblyAI for meeting transcripts by uploading aud
    - Fill in the required API keys and configurations:
      - OpenAI API Key
      - Slack Bot Token and Signing Secret
-     - Fireflies API Key (optional, paid)
+     - Nylas Client ID, Client Secret, Access Token (free tier)
      - AssemblyAI API Key (free tier available)
      - Google Drive Credentials Path and Folder IDs
      - Admin Password for uploads
 
-4. **Google Drive Setup**:
-   - Create a service account and download credentials JSON.
-   - Share the required folders with the service account email.
-   - Set folder IDs in `.env`.
+4. **Nylas Setup**:
+   - Sign up for [Nylas](https://www.nylas.com/) (free tier available).
+   - Create an app and get Client ID, Client Secret.
+   - Generate an Access Token for your account.
+   - Set the values in `.env`.
 
 5. **Slack Setup**:
    - Create a Slack app with bot permissions.

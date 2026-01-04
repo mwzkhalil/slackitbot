@@ -7,7 +7,7 @@ from src.utils.config import Config
 from src.utils.database import get_vector_db
 from src.utils.security import check_data_isolation
 from src.llm.gpt_integration import GPTIntegration
-from src.data_ingestion.fireflies_api import FirefliesAPI
+from src.data_ingestion.nylas_api import NylasAPI
 from src.data_ingestion.google_drive import GoogleDriveAPI
 
 class ClientSuccessAgent:
@@ -15,7 +15,7 @@ class ClientSuccessAgent:
         self.config = config
         self.db = get_vector_db(config.chroma_db_path)
         self.llm = GPTIntegration(config.openai_api_key)
-        self.fireflies = FirefliesAPI(config.fireflies_api_key)
+        self.nylas = NylasAPI(config.nylas_client_id, config.nylas_client_secret, config.nylas_access_token)
         self.drive = GoogleDriveAPI(config.google_drive_credentials_path)
 
     async def respond(self, query: str, client_id: Optional[str] = None) -> str:
@@ -33,12 +33,13 @@ class ClientSuccessAgent:
         return self.llm.generate_response(query, context_docs, purpose)
 
     async def ingest_data(self, client_id: str):
-        # Fireflies - assume client-specific
-        meetings = await self.fireflies.get_meetings(client_id=client_id)
-        for meeting in meetings:
-            doc = f"Transcript: {meeting['transcript']}\nSummary: {meeting['summary']}\nDate: {meeting['date']}\nParticipants: {meeting['participants']}"
-            metadata = {"agent": "client_success", "client_id": client_id, "source": "fireflies", "meeting_id": meeting["id"]}
-            self.db.add_documents([doc], [metadata], [f"fireflies_{client_id}_{meeting['id']}"])
+        # Nylas - assume client-specific calendar or filter
+        events = await self.nylas.get_calendar_events()
+        for event in events:
+            # Filter by client if possible, or tag all
+            doc = f"Meeting Title: {event['title']}\nDescription: {event['description']}\nDate: {event['start_time']}\nParticipants: {', '.join(event['participants'])}\nLocation: {event['location']}"
+            metadata = {"agent": "client_success", "client_id": client_id, "source": "nylas", "event_id": event["id"]}
+            self.db.add_documents([doc], [metadata], [f"nylas_{client_id}_{event['id']}"])
 
         # Google Drive
         folder_id = self.config.get_drive_folder("client_success", client_id)

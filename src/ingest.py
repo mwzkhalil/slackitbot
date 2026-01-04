@@ -1,7 +1,7 @@
 """
 Script to run data ingestion for all agents.
-Run this periodically or on demand.
-Note: Fireflies ingestion is optional and paid; use manual uploads with AssemblyAI for free transcription.
+Uses Nylas for calendar events and Google Drive.
+For transcripts, use manual audio uploads with AssemblyAI.
 """
 
 import asyncio
