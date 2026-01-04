@@ -9,9 +9,13 @@ The system includes:
 - **E. Lazar**: Answers internal questions on SOPs, onboarding, policies, and workflows.
 - **Client Success Agent**: Provides client-specific answers without data contamination.
 
-## Features
+## Data Sources
+- **Fireflies API** (paid): Meeting transcripts, summaries, metadata.
+- **AssemblyAI** (free tier: 5 hours/month): For transcribing uploaded audio files of meetings.
+- **Google Drive**: Documents, presentations, images.
+- **Manual Uploads**: Text files or audio files (auto-transcribed).
 
-- **Data Sources**: Fireflies API (meeting transcripts/summaries), Google Drive (documents/presentations), Manual uploads.
+For cost-free operation, use AssemblyAI for meeting transcripts by uploading audio recordings manually.
 - **Slack Integration**: Dedicated channels per agent, plain text responses.
 - **Security**: Strict dataset separation, read-only access, OAuth for APIs.
 - **LLM**: Uses GPT-4 for response generation.
@@ -31,7 +35,8 @@ The system includes:
    - Fill in the required API keys and configurations:
      - OpenAI API Key
      - Slack Bot Token and Signing Secret
-     - Fireflies API Key
+     - Fireflies API Key (optional, paid)
+     - AssemblyAI API Key (free tier available)
      - Google Drive Credentials Path and Folder IDs
      - Admin Password for uploads
 
@@ -61,7 +66,7 @@ The system includes:
 
 - **Slack Queries**: Mention the bot in the agent's channel with your query.
 - **For Client Success**: Include client ID in the query, e.g., "client123: What is the status?"
-- **Manual Uploads**: POST to `/admin/upload/{agent}` with file and password.
+- **Manual Uploads**: POST to `/admin/upload/{agent}` with file and password. Supports text and audio files (audio is transcribed using AssemblyAI).
 
 ## SOPs and Guidance
 

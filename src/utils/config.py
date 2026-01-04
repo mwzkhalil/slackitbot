@@ -12,6 +12,7 @@ class Config:
         self.slack_bot_token = os.getenv("SLACK_BOT_TOKEN")
         self.slack_signing_secret = os.getenv("SLACK_SIGNING_SECRET")
         self.fireflies_api_key = os.getenv("FIREFLIES_API_KEY")
+        self.assemblyai_api_key = os.getenv("ASSEMBLYAI_API_KEY")
         self.google_drive_credentials_path = os.getenv("GOOGLE_DRIVE_CREDENTIALS_PATH")
         self.google_drive_folder_e_alex = os.getenv("GOOGLE_DRIVE_FOLDER_E_ALEX")
         self.google_drive_folder_e_lazar = os.getenv("GOOGLE_DRIVE_FOLDER_E_LAZAR")
