@@ -33,16 +33,16 @@ class SlackIntegration:
         body = await request.body()
         headers = dict(request.headers)
 
-        # Verify signature
-        if not self.signature_verifier.is_valid_request(body, headers):
-            print("Invalid signature")  # Debug
-            return "Invalid signature"
-
         data = json.loads(body)
 
         if data.get("type") == "url_verification":
             print("URL verification")  # Debug
             return data["challenge"]
+
+        # Verify signature for other events
+        if not self.signature_verifier.is_valid_request(body, headers):
+            print("Invalid signature")  # Debug
+            return "Invalid signature"
 
         if "event" in data:
             event = data["event"]
