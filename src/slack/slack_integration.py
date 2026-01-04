@@ -3,6 +3,7 @@ Slack integration for handling events and posting responses.
 """
 
 import json
+import logging
 import hmac
 import hashlib
 from typing import Dict, Any
@@ -29,30 +30,30 @@ class SlackIntegration:
         """
         Handle incoming Slack event.
         """
-        print("Slack event received")  # Debug
+        logging.info("Slack event received")  # Debug
         body = await request.body()
         headers = dict(request.headers)
 
         try:
             data = json.loads(body.decode('utf-8'))
-            print(f"Parsed data: {data}")
+            logging.info(f"Parsed data: {data}")
         except Exception as e:
-            print(f"JSON load failed: {e}, body: {body.decode('utf-8')}")
+            logging.error(f"JSON load failed: {e}, body: {body.decode('utf-8')}")
             return "json failed"
 
         if data.get("type") == "url_verification":
-            print("URL verification")  # Debug
+            logging.info("URL verification")  # Debug
             return {"challenge": data.get("challenge", "")}
 
         # Verify signature for other events
         if not self.signature_verifier.is_valid_request(body, headers):
-            print("Invalid signature")  # Debug
+            logging.info("Invalid signature")  # Debug
             return "Invalid signature"
 
         if "event" in data:
             event = data["event"]
             if event.get("type") == "app_mention":
-                print("App mention event")  # Debug
+                logging.info("App mention event")  # Debug
                 return await self.handle_app_mention(event)
 
         return ""
@@ -62,7 +63,7 @@ class SlackIntegration:
         Handle @mention in Slack.
         Parse the message to determine agent and query.
         """
-        print(f"Handling mention in channel: {event.get('channel')}")  # Debug
+        logging.info(f"Handling mention in channel: {event.get('channel')}")  # Debug
         text = event.get("text", "")
         channel = event.get("channel")
         user = event.get("user")
@@ -76,7 +77,7 @@ class SlackIntegration:
 
         agent_name = channel_to_agent.get(channel)
         if not agent_name:
-            print(f"No agent for channel {channel}")  # Debug
+            logging.info(f"No agent for channel {channel}")  # Debug
             return "This channel is not associated with an agent."
 
         # Extract query
@@ -92,22 +93,22 @@ class SlackIntegration:
                 query = query.strip()
 
         if not validate_agent_access(agent_name, user, client_id):
-            print("Access denied")  # Debug
+            logging.info("Access denied")  # Debug
             return "You do not have access to this agent."
 
         query = sanitize_input(query)
-        print(f"Query: {query} for agent {agent_name}")  # Debug
+        logging.info(f"Query: {query} for agent {agent_name}")  # Debug
 
         agent = self.agents[agent_name]
         response = await agent.respond(query, client_id)
-        print(f"Response: {response}")  # Debug
+        logging.info(f"Response: {response}")  # Debug
 
         # Post response back to channel
         try:
             self.client.chat_postMessage(channel=channel, text=response)
-            print("Posted to Slack")  # Debug
+            logging.info("Posted to Slack")  # Debug
         except Exception as e:
-            print(f"Failed to post: {e}")  # Debug
+            logging.error(f"Failed to post: {e}")  # Debug
 
         return response  # For the webhook response, but since we post, maybe empty
 
