@@ -67,7 +67,7 @@ The system includes:
        - Download ngrok from [https://ngrok.com/download](https://ngrok.com/download).
        - Sign up for a free account and get your auth token.
        - Run `ngrok config add-authtoken YOUR_TOKEN`.
-       - Start your server locally: `python src/main.py` (runs on port 8000).
+       - Start your server locally: `python -m src.main` (runs on port 8000).
        - In another terminal, run `ngrok http 8000`.
        - Copy the HTTPS URL (e.g., `https://abc123.ngrok.io`) and append `/slack/events` for the Request URL.
    - Subscribe to events: Add `app_mention` under "Bot Events".
@@ -79,13 +79,13 @@ The system includes:
 
 6. **Run Data Ingestion**:
    ```
-   python src/ingest.py
+   python -m src.ingest
    ```
    Run this periodically to sync data.
 
 7. **Start the Server**:
    ```
-   python src/main.py
+   python -m src.main
    ```
    Or use uvicorn: `uvicorn src.main:app --reload`
 
