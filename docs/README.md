@@ -61,7 +61,7 @@ The system includes:
 5. **Slack Setup**:
    - Go to [https://api.slack.com/apps](https://api.slack.com/apps) and create a new app.
    - Choose "From scratch" and name it (e.g., "AI Agent Bot").
-   - Add features: Enable "Bots" and "Event Subscriptions".
+   - Add features: Go to "Features" > "App Home" and add a bot user (display name e.g., "AI Agent", username e.g., "ai-agent"). Enable "Event Subscriptions".
    - Set Request URL for Events: Use a temporary URL (e.g., from ngrok) pointing to `/slack/events` (e.g., `https://your-ngrok-url.ngrok.io/slack/events`).
      - **Ngrok Setup Guide**:
        - Download ngrok from [https://ngrok.com/download](https://ngrok.com/download).
