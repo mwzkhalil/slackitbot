@@ -44,6 +44,20 @@ The system includes:
    - Set `NYLAS_ACCESS_TOKEN` in `.env`.
    - Client ID and Secret are optional for v3 API.
 
+5. **Google Drive Setup**:
+   - Go to the [Google Cloud Console](https://console.cloud.google.com/).
+   - Create a new project or select an existing one.
+   - Enable the Google Drive API: Search for "Google Drive API" and enable it.
+   - Create credentials: Go to "Credentials" > "Create Credentials" > "Service Account".
+   - Name the service account (e.g., "AI Agent Service Account").
+   - Grant it the "Editor" role or custom role with Drive read access.
+   - Create a key: Click on the service account > "Keys" > "Add Key" > "JSON". Download the file.
+   - Set `GOOGLE_DRIVE_CREDENTIALS_PATH` to the path of this JSON file (e.g., `./credentials.json`).
+   - Create folders in Google Drive for each agent (e.g., "E Alex Docs", "E Lazar Docs", "Client Success Docs").
+   - Share each folder with the service account email (found in the JSON or console).
+   - Get Folder IDs: Open each folder in Google Drive, copy the ID from the URL (e.g., `https://drive.google.com/drive/folders/FOLDER_ID`).
+   - Set the corresponding `GOOGLE_DRIVE_FOLDER_*` variables in `.env`.
+
 5. **Slack Setup**:
    - Create a Slack app with bot permissions.
    - Set up event subscriptions for app mentions.
