@@ -7,12 +7,16 @@ from nylas import APIClient
 from typing import List, Dict, Any, Optional
 
 class NylasAPI:
-    def __init__(self, client_id: str, client_secret: str, access_token: str):
-        self.client = APIClient(
-            client_id=client_id,
-            client_secret=client_secret,
-            access_token=access_token
-        )
+    def __init__(self, access_token: str, client_id: str = None, client_secret: str = None):
+        if client_id and client_secret:
+            self.client = APIClient(
+                client_id=client_id,
+                client_secret=client_secret,
+                access_token=access_token
+            )
+        else:
+            # For Nylas v3, can initialize with just access_token
+            self.client = APIClient(access_token=access_token)
 
     async def get_calendar_events(self, calendar_id: Optional[str] = None, limit: int = 50) -> List[Dict[str, Any]]:
         """

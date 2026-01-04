@@ -13,8 +13,8 @@ class Config:
         self.slack_signing_secret = os.getenv("SLACK_SIGNING_SECRET")
         self.fireflies_api_key = os.getenv("FIREFLIES_API_KEY")
         self.assemblyai_api_key = os.getenv("ASSEMBLYAI_API_KEY")
-        self.nylas_client_id = os.getenv("NYLAS_CLIENT_ID")
-        self.nylas_client_secret = os.getenv("NYLAS_CLIENT_SECRET")
+        self.nylas_client_id = os.getenv("NYLAS_CLIENT_ID")  # Optional for v3
+        self.nylas_client_secret = os.getenv("NYLAS_CLIENT_SECRET")  # Optional for v3
         self.nylas_access_token = os.getenv("NYLAS_ACCESS_TOKEN")
         self.google_drive_credentials_path = os.getenv("GOOGLE_DRIVE_CREDENTIALS_PATH")
         self.google_drive_folder_e_alex = os.getenv("GOOGLE_DRIVE_FOLDER_E_ALEX")

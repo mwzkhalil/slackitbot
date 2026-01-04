@@ -15,7 +15,7 @@ class ClientSuccessAgent:
         self.config = config
         self.db = get_vector_db(config.chroma_db_path)
         self.llm = GPTIntegration(config.openai_api_key)
-        self.nylas = NylasAPI(config.nylas_client_id, config.nylas_client_secret, config.nylas_access_token)
+        self.nylas = NylasAPI(config.nylas_access_token, config.nylas_client_id, config.nylas_client_secret)
         self.drive = GoogleDriveAPI(config.google_drive_credentials_path)
 
     async def respond(self, query: str, client_id: Optional[str] = None) -> str:

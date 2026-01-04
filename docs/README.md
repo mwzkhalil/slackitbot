@@ -33,16 +33,16 @@ The system includes:
    - Fill in the required API keys and configurations:
      - OpenAI API Key
      - Slack Bot Token and Signing Secret
-     - Nylas Client ID, Client Secret, Access Token (free tier)
+     - Nylas Access Token (Client ID and Secret optional for v3)
      - AssemblyAI API Key (free tier available)
      - Google Drive Credentials Path and Folder IDs
      - Admin Password for uploads
 
-4. **Nylas Setup**:
+4. **Nylas Setup** (Optional for basic calendar access):
    - Sign up for [Nylas](https://www.nylas.com/) (free tier available).
-   - Create an app and get Client ID, Client Secret.
-   - Generate an Access Token for your account.
-   - Set the values in `.env`.
+   - Generate an Access Token from your dashboard.
+   - Set `NYLAS_ACCESS_TOKEN` in `.env`.
+   - Client ID and Secret are optional for v3 API.
 
 5. **Slack Setup**:
    - Create a Slack app with bot permissions.
