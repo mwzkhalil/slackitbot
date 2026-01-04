@@ -76,6 +76,11 @@ The system includes:
    - Copy the "Bot User OAuth Token" (starts with `xoxb-`) for `SLACK_BOT_TOKEN`.
    - Copy the "Signing Secret" from "Basic Information" for `SLACK_SIGNING_SECRET`.
    - Create dedicated channels for each agent (e.g., #e-alex, #e-lazar, #client-success) and invite the bot.
+     - **Channel Setup Guide**:
+       - In Slack, click "Add channels" > "Create a channel".
+       - Name them `#e-alex`, `#e-lazar`, `#client-success` (make them public or private as needed).
+       - For each channel, type `/invite @YourBotName` (replace with your bot's username, e.g., @AI Agent).
+       - The bot should join and be able to respond to mentions.
 
 6. **Run Data Ingestion**:
    ```
