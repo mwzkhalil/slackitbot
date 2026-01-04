@@ -1,0 +1,100 @@
+"""
+Slack integration for handling events and posting responses.
+"""
+
+import json
+import hmac
+import hashlib
+from typing import Dict, Any
+from slack_sdk import WebClient
+from slack_sdk.signature import SignatureVerifier
+from src.agents.e_alex import EAlexAgent
+from src.agents.e_lazar import ELazarAgent
+from src.agents.client_success import ClientSuccessAgent
+from src.utils.config import Config
+from src.utils.security import validate_agent_access, sanitize_input
+
+class SlackIntegration:
+    def __init__(self, config: Config):
+        self.config = config
+        self.client = WebClient(token=config.slack_bot_token)
+        self.signature_verifier = SignatureVerifier(config.slack_signing_secret)
+        self.agents = {
+            "e_alex": EAlexAgent(config),
+            "e_lazar": ELazarAgent(config),
+            "client_success": ClientSuccessAgent(config)
+        }
+
+    async def handle_event(self, request) -> str:
+        """
+        Handle incoming Slack event.
+        """
+        body = await request.body()
+        headers = dict(request.headers)
+
+        # Verify signature
+        if not self.signature_verifier.is_valid_request(body, headers):
+            return "Invalid signature"
+
+        data = json.loads(body)
+
+        if data.get("type") == "url_verification":
+            return data["challenge"]
+
+        if "event" in data:
+            event = data["event"]
+            if event.get("type") == "app_mention":
+                return await self.handle_app_mention(event)
+
+        return ""
+
+    async def handle_app_mention(self, event: Dict[str, Any]) -> str:
+        """
+        Handle @mention in Slack.
+        Parse the message to determine agent and query.
+        """
+        text = event.get("text", "")
+        channel = event.get("channel")
+        user = event.get("user")
+
+        # Assume message format: @bot agent: query or @bot query (for channel-specific agent)
+        # For simplicity, map channels to agents
+        channel_to_agent = {
+            "C1234567890": "e_alex",  # Replace with actual channel IDs
+            "C0987654321": "e_lazar",
+            "C1122334455": "client_success"
+        }
+
+        agent_name = channel_to_agent.get(channel)
+        if not agent_name:
+            return "This channel is not associated with an agent."
+
+        # Extract query
+        query = text.replace(f"<@{self.config.slack_bot_token.split('-')[1]}>", "").strip()  # Remove @mention
+
+        # For client_success, extract client_id if present
+        client_id = None
+        if agent_name == "client_success":
+            # Assume query starts with client_id:
+            if ":" in query:
+                client_id, query = query.split(":", 1)
+                client_id = client_id.strip()
+                query = query.strip()
+
+        if not validate_agent_access(agent_name, user, client_id):
+            return "You do not have access to this agent."
+
+        query = sanitize_input(query)
+
+        agent = self.agents[agent_name]
+        response = await agent.respond(query, client_id)
+
+        # Post response back to channel
+        self.client.chat_postMessage(channel=channel, text=response)
+
+        return response  # For the webhook response, but since we post, maybe empty
+
+# Function for main.py
+async def handle_slack_event(request, config: Config) -> str:
+    slack = SlackIntegration(config)
+    return await slack.handle_event(request)
