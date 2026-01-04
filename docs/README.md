@@ -94,11 +94,40 @@ The system includes:
    ```
    Or use uvicorn: `uvicorn src.main:app --reload`
 
-## Usage
+## Testing the System
 
-- **Slack Queries**: Mention the bot in the agent's channel with your query.
-- **For Client Success**: Include client ID in the query, e.g., "client123: What is the status?"
-- **Manual Uploads**: POST to `/admin/upload/{agent}` with file and password. Supports text and audio files (audio is transcribed using AssemblyAI).
+1. **Ingest Data**:
+   ```
+   python -m src.ingest
+   ```
+   - This fetches calendar events from Nylas and files from Google Drive, indexing them for the agents.
+
+2. **Start the Server**:
+   ```
+   python -m src.main
+   ```
+   - Runs on http://localhost:8000. Keep it running.
+
+3. **Set Up Ngrok (for Slack)**:
+   - In another terminal: `ngrok http 8000`
+   - Ensure the Slack app's Request URL is set to `https://your-ngrok-url.ngrok.io/slack/events`.
+
+4. **Test in Slack**:
+   - Go to #e-alex and type: `@YourBotName What meetings are scheduled?`
+   - Go to #e-lazar and type: `@YourBotName What are the SOPs?`
+   - For #client-success: `@YourBotName client123: What is the project status?`
+   - The bot should respond with answers based on indexed data.
+
+5. **Test Manual Upload** (Optional):
+   - Use a tool like Postman or curl:
+     ```
+     curl -X POST "http://localhost:8000/admin/upload/e_alex" \
+     -F "file=@your_file.txt" \
+     -F "password=your_admin_password"
+     ```
+   - Then re-ingest or query again.
+
+If no data is found, responses will be "I don't have information on that." Ensure your .env has valid keys and data exists in Nylas/Google Drive.
 
 ## SOPs and Guidance
 
