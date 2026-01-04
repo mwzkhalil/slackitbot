@@ -6,12 +6,14 @@ Handles Slack integrations, data ingestion, and agent responses.
 from fastapi import FastAPI, Request, HTTPException, UploadFile, File, Form
 from fastapi.responses import PlainTextResponse
 import os
+import logging
 from dotenv import load_dotenv
 from src.slack.slack_integration import handle_slack_event
 from src.data_ingestion.manual_upload import handle_manual_upload
 from src.utils.config import Config
 
 load_dotenv()
+logging.basicConfig(level=logging.INFO)
 
 app = FastAPI(title="AI Agent System", version="1.0.0")
 
