@@ -63,6 +63,13 @@ The system includes:
    - Choose "From scratch" and name it (e.g., "AI Agent Bot").
    - Add features: Enable "Bots" and "Event Subscriptions".
    - Set Request URL for Events: Use a temporary URL (e.g., from ngrok) pointing to `/slack/events` (e.g., `https://your-ngrok-url.ngrok.io/slack/events`).
+     - **Ngrok Setup Guide**:
+       - Download ngrok from [https://ngrok.com/download](https://ngrok.com/download).
+       - Sign up for a free account and get your auth token.
+       - Run `ngrok config add-authtoken YOUR_TOKEN`.
+       - Start your server locally: `python src/main.py` (runs on port 8000).
+       - In another terminal, run `ngrok http 8000`.
+       - Copy the HTTPS URL (e.g., `https://abc123.ngrok.io`) and append `/slack/events` for the Request URL.
    - Subscribe to events: Add `app_mention` under "Bot Events".
    - Add OAuth Scopes: Under "OAuth & Permissions", add `app_mentions:read`, `channels:history`, `chat:write`, `files:read`.
    - Install the app to your workspace.
