@@ -59,9 +59,16 @@ The system includes:
    - Set the corresponding `GOOGLE_DRIVE_FOLDER_*` variables in `.env`.
 
 5. **Slack Setup**:
-   - Create a Slack app with bot permissions.
-   - Set up event subscriptions for app mentions.
-   - Install the app in the dedicated channels.
+   - Go to [https://api.slack.com/apps](https://api.slack.com/apps) and create a new app.
+   - Choose "From scratch" and name it (e.g., "AI Agent Bot").
+   - Add features: Enable "Bots" and "Event Subscriptions".
+   - Set Request URL for Events: Use a temporary URL (e.g., from ngrok) pointing to `/slack/events` (e.g., `https://your-ngrok-url.ngrok.io/slack/events`).
+   - Subscribe to events: Add `app_mention` under "Bot Events".
+   - Add OAuth Scopes: Under "OAuth & Permissions", add `app_mentions:read`, `channels:history`, `chat:write`, `files:read`.
+   - Install the app to your workspace.
+   - Copy the "Bot User OAuth Token" (starts with `xoxb-`) for `SLACK_BOT_TOKEN`.
+   - Copy the "Signing Secret" from "Basic Information" for `SLACK_SIGNING_SECRET`.
+   - Create dedicated channels for each agent (e.g., #e-alex, #e-lazar, #client-success) and invite the bot.
 
 6. **Run Data Ingestion**:
    ```
