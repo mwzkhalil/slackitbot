@@ -33,7 +33,7 @@ class SlackIntegration:
         body = await request.body()
         headers = dict(request.headers)
 
-        data = json.loads(body)
+        data = json.loads(body.decode('utf-8'))
 
         if data.get("type") == "url_verification":
             print("URL verification")  # Debug
