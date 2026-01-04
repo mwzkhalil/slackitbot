@@ -28,7 +28,10 @@ async def slack_events(request: Request):
     """
     try:
         response = await handle_slack_event(request, config)
-        return PlainTextResponse(response)
+        if isinstance(response, dict):
+            return response  # JSON for url_verification
+        else:
+            return PlainTextResponse(response)
     except Exception as e:
         return PlainTextResponse(f"Error: {str(e)}")
 
@@ -55,4 +58,4 @@ async def upload_file(
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=5001)

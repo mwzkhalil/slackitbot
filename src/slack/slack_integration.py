@@ -38,7 +38,7 @@ class SlackIntegration:
 
         if data.get("type") == "url_verification":
             print("URL verification")  # Debug
-            return data["challenge"]
+            return {"challenge": data.get("challenge", "")}
 
         # Verify signature for other events
         if not self.signature_verifier.is_valid_request(body, headers):
