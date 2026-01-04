@@ -57,12 +57,11 @@ class SlackIntegration:
         channel = event.get("channel")
         user = event.get("user")
 
-        # Assume message format: @bot agent: query or @bot query (for channel-specific agent)
-        # For simplicity, map channels to agents
+        # Map channel IDs to agents - UPDATE THESE WITH YOUR ACTUAL CHANNEL IDs
         channel_to_agent = {
-            "C1234567890": "e_alex",  # Replace with actual channel IDs
-            "C0987654321": "e_lazar",
-            "C1122334455": "client_success"
+            "C1234567890": "e_alex",  # Replace with actual #e-alex channel ID
+            "C0987654321": "e_lazar",  # Replace with actual #e-lazar channel ID
+            "C1122334455": "client_success"  # Replace with actual #client-success channel ID
         }
 
         agent_name = channel_to_agent.get(channel)

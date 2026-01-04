@@ -113,10 +113,10 @@ The system includes:
    - Ensure the Slack app's Request URL is set to `https://your-ngrok-url.ngrok.io/slack/events`.
 
 4. **Test in Slack**:
-   - Go to #e-alex and type: `@YourBotName What meetings are scheduled?`
-   - Go to #e-lazar and type: `@YourBotName What are the SOPs?`
-   - For #client-success: `@YourBotName client123: What is the project status?`
-   - The bot should respond with answers based on indexed data.
+   - First, get your channel IDs: In Slack, right-click each channel (#e-alex, #e-lazar, #client-success) > "Copy link". The ID is the part after `/archives/` (e.g., `C1234567890`).
+   - Update `src/slack/slack_integration.py` line ~25: Replace the placeholder channel IDs with your actual ones.
+   - Then, mention the bot: `@AI Agent Bot What meetings are scheduled?`
+   - The bot should respond based on indexed data.
 
 5. **Test Manual Upload** (Optional):
    - Use a tool like Postman or curl:
