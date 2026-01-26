@@ -2,7 +2,7 @@
 
 A simplified RAG (Retrieval Augmented Generation) system that provides one AI agent (E. Alex) responding to Slack mentions using Google Drive documents.
 
-## 🎯 Overview
+## Overview
 
 **E. Alex** answers questions from documents stored in your Google Drive folder: `My Drive/AI/e-ALex`
 
@@ -17,7 +17,7 @@ A simplified RAG (Retrieval Augmented Generation) system that provides one AI ag
 - **LLM**: GPT-4 for response generation
 - **Vector Database**: ChromaDB for document indexing and semantic search
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Python 3.8+
@@ -29,7 +29,7 @@ A simplified RAG (Retrieval Augmented Generation) system that provides one AI ag
 
 1. **Clone the repository**
 ```bash
-git clone <repository-url>
+git clone https://github.com/mwzkhalil/slackitbot/
 cd slackitbot
 ```
 
@@ -130,45 +130,8 @@ ngrok http 5001
 @YourBotName what was discussed in the monthly 1-2-1?
 ```
 
-## 📁 Project Structure
 
-```
-slackitbot/
-├── src/
-│   ├── agents/
-│   │   ├── e_alex.py           # E. Alex agent implementation
-│   │   ├── e_lazar.py          # (Commented out)
-│   │   └── client_success.py   # (Commented out)
-│   ├── data_ingestion/
-│   │   ├── google_drive.py     # Google Drive API integration
-│   │   ├── fireflies_api.py    # (Commented out)
-│   │   ├── manual_upload.py    # (Commented out)
-│   │   └── transcription_api.py # (Commented out)
-│   ├── llm/
-│   │   └── gpt_integration.py  # OpenAI GPT-4 integration
-│   ├── slack/
-│   FIREFLIES_SETUP.md          # Fireflies integration guide
-├── test_fireflies.py           # Test Fireflies connection
-├── │   └── slack_integration.py # Slack event handling
-│   ├── utils/
-│   │   ├── config.py           # Environment configuration
-│   │   ├── database.py         # ChromaDB wrapper
-│   │   └── security.py         # Data isolation & security
-│   ├── main.py                 # FastAPI application
-│   └── ingest.py               # Data ingestion script
-├── docs/
-│   ├── README.md               # Detailed documentation
-│   ├── SOPs.md                 # Standard operating procedures
-│   └── guidance.md             # User guidance
-├── .github/
-│   └── copilot-instructions.md # AI coding agent instructions
-├── chroma_db/                  # Vector database storage
-├── requirements.txt            # Python dependencies
-├── .env.example                # Envi (syncs both Google Drive and Fireflies)ronment variables template
-└── .env                        # Your configuration (not committed)
-```
-
-## 🔧 Maintenance
+## Maintenance
 
 ### Daily Data Ingestion
 Run ingestion daily to keep data fresh:
@@ -191,14 +154,14 @@ rm -rf chroma_db/
 python -m src.ingest
 ```
 
-## 🛡️ Security
+## Security
 
 - **Data Isolation**: E. Alex only accesses documents tagged with `{"agent": "e_alex"}`
 - **No Data Mixing**: ChromaDB metadata filters ensure separation
 - **Environment Variables**: All secrets stored in `.env` (never committed)
 - **Service Account**: Google Drive access is read-only
 
-## 📝 Usage Examples
+## Usage Examples
 
 ```
 # Ask about meetings
@@ -214,38 +177,9 @@ python -m src.ingest
 @EAlexBot what was discussed about AI in the LinkedIn videos?
 ```
 
-## 🐛 Troubleshooting
-
-### Bot doesn't respond
-- Check channel ID matches in `src/slack/slack_integration.py`
-- Verify bot is invited to the channel
-- Check server logs for errors
-
-### No data found
-- Verify Google Drive folder is shared with service account
-- Run ingestion: `python -m src.ingest`
-- Check ChromaDB has data: `ls -la chroma_db/`
-
-### Slack signature verification fails
-- Ensure `.env` has correct `SLACK_SIGNING_SECRET`
-- Don't read request body twice in code
-- Check ngrok URL matches Slack Event Subscriptions URL
-
-## 📚 Additional Resources
+## Additional Resources
 
 - [Google Drive API Documentation](https://developers.google.com/drive/api/v3/about-sdk)
 - [Slack API Documentation](https://api.slack.com/)
 - [OpenAI API Documentation](https://platform.openai.com/docs/)
 - [ChromaDB Documentation](https://docs.trychroma.com/)
-
-## 🤝 Contributing
-
-This is a simplified single-agent system. To add more agents or data sources:
-1. See `.github/copilot-instructions.md` for architecture details
-2. Uncomment relevant code sections
-3. Add necessary environment variables
-4. Update channel mappings
-
-## 📄 License
-
-[Add your license here]
