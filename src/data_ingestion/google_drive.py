@@ -34,7 +34,7 @@ class GoogleDriveAPI:
                 folder_info = self.service.files().get(fileId=folder_id, fields='id, name, mimeType').execute()
                 logging.info(f"Accessing folder: {folder_info.get('name', 'Unknown')} (ID: {folder_id})")
             except Exception as e:
-                logging.error(f"⚠️ Cannot access folder {folder_id}: {str(e)}")
+                logging.error(f"Cannot access folder {folder_id}: {str(e)}")
                 logging.error("This usually means:")
                 logging.error("  1. The folder ID is incorrect")
                 logging.error("  2. The service account doesn't have access to the folder")
@@ -42,27 +42,27 @@ class GoogleDriveAPI:
                 logging.error("Solution: Share the folder with the service account email (found in your credentials JSON file)")
                 return []
             
-        query = f"'{folder_id}' in parents and trashed=false"
-        results = self.service.files().list(
-            q=query, 
-            fields="files(id, name, mimeType)",
-            pageSize=1000
-        ).execute()
-        items = results.get('files', [])
+            query = f"'{folder_id}' in parents and trashed=false"
+            results = self.service.files().list(
+                q=query, 
+                fields="files(id, name, mimeType)",
+                pageSize=1000
+            ).execute()
+            items = results.get('files', [])
             
             logging.info(f"Found {len(items)} items in folder (files + subfolders)")
-        
-        for item in items:
-            if item['mimeType'] == 'application/vnd.google-apps.folder':
-                # It's a folder, recursively get its contents if recursive=True
+            
+            for item in items:
+                if item['mimeType'] == 'application/vnd.google-apps.folder':
+                    # It's a folder, recursively get its contents if recursive=True
                     logging.info(f"  Found subfolder: {item['name']} (ID: {item['id']})")
-                if recursive:
-                    subfolder_files = await self.get_files(item['id'], recursive=True)
-                    all_files.extend(subfolder_files)
+                    if recursive:
+                        subfolder_files = await self.get_files(item['id'], recursive=True)
+                        all_files.extend(subfolder_files)
                         logging.info(f"    Subfolder '{item['name']}' contains {len(subfolder_files)} files")
-            else:
-                # It's a file
-                all_files.append(item)
+                else:
+                    # It's a file
+                    all_files.append(item)
                     logging.info(f"  Found file: {item['name']} (Type: {item['mimeType']})")
             
             if not items:

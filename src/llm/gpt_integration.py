@@ -70,7 +70,7 @@ class GPTIntegration:
         
         # Customize prompt based on agent
         if "e_lazar" in agent_name.lower() or "Lazar" in agent_name:
-        prompt = f"""
+            prompt = f"""
 Your purpose: {agent_purpose}
 
 CRITICAL INSTRUCTIONS FOR E. LAZAR:
