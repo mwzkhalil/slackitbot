@@ -1,0 +1,38 @@
+2 channel Terms of Service accepted
+Retrieving notices: - \ | / - done
+Channels:
+ - defaults
+Platform: linux-64
+Collecting package metadata (repodata.json): | / - \ | / - done
+Solving environment: | / - done
+
+## Package Plan ##
+
+  environment location: /home/mahwiz/miniconda3/envs/mahwiz
+
+  added / updated specs:
+    - websockets
+
+
+The following packages will be downloaded:
+
+    package                    |            build
+    ---------------------------|-----------------
+    websockets-15.0.1          |  py312h5eee18b_0         345 KB
+    ------------------------------------------------------------
+                                           Total:         345 KB
+
+The following NEW packages will be INSTALLED:
+
+  websockets         pkgs/main/linux-64::websockets-15.0.1-py312h5eee18b_0 
+
+The following packages will be UPDATED:
+
+  ca-certificates    conda-forge/noarch::ca-certificates-2~ --> pkgs/main/linux-64::ca-certificates-2025.12.2-h06a4308_0 
+
+
+
+Downloading and Extracting Packages: ...working...websockets-15.0.1    | 345 KB    |            |   0% websockets-15.0.1    | 345 KB    | 4          |   5% websockets-15.0.1    | 345 KB    | ########## | 100% websockets-15.0.1    | 345 KB    | ########## | 100% websockets-15.0.1    | 345 KB    | ########## | 100%                                                       done
+Preparing transaction: | done
+Verifying transaction: - \ done
+Executing transaction: / done

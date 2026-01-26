@@ -11,7 +11,7 @@ from slack_sdk import WebClient
 from slack_sdk.signature import SignatureVerifier
 from src.agents.e_alex import EAlexAgent
 from src.agents.e_lazar import ELazarAgent
-from src.agents.client_success import ClientSuccessAgent
+# from src.agents.client_success import ClientSuccessAgent  # COMMENTED OUT - Not used
 from src.utils.config import Config
 from src.utils.security import validate_agent_access, sanitize_input
 
@@ -20,10 +20,11 @@ class SlackIntegration:
         self.config = config
         self.client = WebClient(token=config.slack_bot_token)
         self.signature_verifier = SignatureVerifier(config.slack_signing_secret)
+        # E. Alex and E. Lazar agents are active
         self.agents = {
             "e_alex": EAlexAgent(config),
             "e_lazar": ELazarAgent(config),
-            "client_success": ClientSuccessAgent(config)
+            # "client_success": ClientSuccessAgent(config)  # COMMENTED OUT - Not used
         }
         # Get bot user ID
         try:
@@ -50,7 +51,7 @@ class SlackIntegration:
 
         if data.get("type") == "url_verification":
             logging.info("URL verification")  # Debug
-            return data.get("challenge", "")
+            return {"challenge": data.get("challenge", "")}
 
         # Verify signature for other events
         if not self.signature_verifier.is_valid_request(body, headers):
@@ -74,12 +75,14 @@ class SlackIntegration:
         text = event.get("text", "")
         channel = event.get("channel")
         user = event.get("user")
+        event_ts = event.get("event_ts", "")
 
         # Map channel IDs to agents - UPDATE THESE WITH YOUR ACTUAL CHANNEL IDs
+        # E. Alex and E. Lazar agents are active
         channel_to_agent = {
-            "C0A6Q87TQTC": "e_alex",  # Replace with actual #e-alex channel ID
-            "C0A68QU90CX": "e_lazar",  # Replace with actual #e-lazar channel ID
-            "C0A7JHGV07J": "client_success"  # Replace with actual #client-success channel ID
+            "C0A7E80RA79": "e_alex",  # Replace with actual #e-alex channel ID
+            "C0A8Z329GVD": "e_lazar",  # Replace with actual #e-lezzat channel ID
+            # "C0A7JHGV07J": "client_success"  # COMMENTED OUT - Not used
         }
 
         agent_name = channel_to_agent.get(channel)
@@ -94,34 +97,47 @@ class SlackIntegration:
             # Fallback: assume the mention is at the start
             query = text.split(">", 1)[-1].strip() if ">" in text else text.strip()
 
-        # For client_success, extract client_id if present
-        client_id = None
-        if agent_name == "client_success":
-            # Assume query starts with client_id:
-            if ":" in query:
-                client_id, query = query.split(":", 1)
-                client_id = client_id.strip()
-                query = query.strip()
+        # COMMENTED OUT - Client Success not used, no client_id needed
+        # client_id = None
+        # if agent_name == "client_success":
+        #     if ":" in query:
+        #         client_id, query = query.split(":", 1)
+        #         client_id = client_id.strip()
+        #         query = query.strip()
 
-        if not validate_agent_access(agent_name, user, client_id):
+        if not validate_agent_access(agent_name, user, None):
             logging.info("Access denied")  # Debug
             return "You do not have access to this agent."
 
         query = sanitize_input(query)
-        logging.info(f"Query: {query} for agent {agent_name}")  # Debug
+        logging.info(f"Query: {query} for agent {agent_name} (event_ts: {event_ts})")  # Debug
 
-        agent = self.agents[agent_name]
-        response = await agent.respond(query, client_id)
-        logging.info(f"Response: {response}")  # Debug
-
-        # Post response back to channel
+        # Process in background to avoid Slack retries (return 200 OK immediately)
+        import asyncio
+        asyncio.create_task(self._process_and_respond(agent_name, query, channel, event_ts))
+        
+        # Return empty string immediately to acknowledge event
+        return ""
+    
+    async def _process_and_respond(self, agent_name: str, query: str, channel: str, event_ts: str):
+        """Process query and post response (runs in background)"""
         try:
+            agent = self.agents[agent_name]
+            response = await agent.respond(query, None)
+            logging.info(f"Response for {event_ts}: {response[:100]}...")  # Debug
+            
+            # Post response back to channel
             self.client.chat_postMessage(channel=channel, text=response)
-            logging.info("Posted to Slack")  # Debug
+            logging.info(f"Posted to Slack for {event_ts}")  # Debug
         except Exception as e:
-            logging.error(f"Failed to post: {e}")  # Debug
-
-        return response  # For the webhook response, but since we post, maybe empty
+            logging.error(f"Error processing query: {e}")
+            try:
+                self.client.chat_postMessage(
+                    channel=channel, 
+                    text=f"Sorry, I encountered an error: {str(e)}"
+                )
+            except:
+                pass
 
 # Function for main.py
 async def handle_slack_event(request, config: Config) -> str:

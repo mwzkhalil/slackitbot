@@ -11,23 +11,23 @@ class Config:
         self.openai_api_key = os.getenv("OPENAI_API_KEY")
         self.slack_bot_token = os.getenv("SLACK_BOT_TOKEN")
         self.slack_signing_secret = os.getenv("SLACK_SIGNING_SECRET")
-        self.fireflies_api_key = os.getenv("FIREFLIES_API_KEY")
-        self.assemblyai_api_key = os.getenv("ASSEMBLYAI_API_KEY")
-        self.nylas_client_id = os.getenv("NYLAS_CLIENT_ID")  # Optional for v3
-        self.nylas_client_secret = os.getenv("NYLAS_CLIENT_SECRET")  # Optional for v3
-        self.nylas_access_token = os.getenv("NYLAS_ACCESS_TOKEN")
+        self.fireflies_api_key = os.getenv("FIREFLIES_API_KEY")  # ENABLED for meeting transcripts
+        # self.assemblyai_api_key = os.getenv("ASSEMBLYAI_API_KEY")  # COMMENTED OUT - Not used
         self.google_drive_credentials_path = os.getenv("GOOGLE_DRIVE_CREDENTIALS_PATH")
+        # Google Custom Search API (optional - for Amazon queries)
+        self.google_search_api_key = os.getenv("GOOGLE_SEARCH_API_KEY")
+        self.google_search_engine_id = os.getenv("GOOGLE_SEARCH_ENGINE_ID")
         self.google_drive_folder_e_alex = os.getenv("GOOGLE_DRIVE_FOLDER_E_ALEX")
-        self.google_drive_folder_e_lazar = os.getenv("GOOGLE_DRIVE_FOLDER_E_LAZAR")
-        self.google_drive_folder_client_success = os.getenv("GOOGLE_DRIVE_FOLDER_CLIENT_SUCCESS")
+        self.google_drive_folder_e_lazar = os.getenv("GOOGLE_DRIVE_FOLDER_E_LAZAR")  # ENABLED for E-Lazar
+        self.google_drive_folder_client_success = os.getenv("GOOGLE_DRIVE_FOLDER_CLIENT_SUCCESS")  # ENABLED for Client Success
         self.chroma_db_path = os.getenv("CHROMA_DB_PATH", "./chroma_db")
-        self.admin_password = os.getenv("ADMIN_PASSWORD")
+        # self.admin_password = os.getenv("ADMIN_PASSWORD")  # COMMENTED OUT - Not used
 
-        # Validate required configs
+        # Validate required configs (E. Alex with Google Drive + Fireflies)
+        # Note: E-Lazar and Client Success folders are optional
         required = [
             self.openai_api_key, self.slack_bot_token, self.slack_signing_secret,
-            self.fireflies_api_key, self.google_drive_credentials_path,
-            self.admin_password
+            self.google_drive_credentials_path, self.google_drive_folder_e_alex
         ]
         if not all(required):
             raise ValueError("Missing required environment variables. Check .env file.")

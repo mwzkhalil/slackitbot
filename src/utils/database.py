@@ -23,9 +23,10 @@ class VectorDB:
             ids=ids
         )
 
-    def query(self, query_text: str, filters: Dict[str, Any], n_results: int = 5) -> Dict[str, Any]:
+    def query(self, query_text: str, filters: Dict[str, Any], n_results: int = 15) -> Dict[str, Any]:
         """
         Query the database with filters for data isolation.
+        Returns top 15 most relevant documents (increased for better coverage).
         """
         where = filters
         results = self.collection.query(

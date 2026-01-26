@@ -9,13 +9,15 @@ import os
 import logging
 from dotenv import load_dotenv
 from src.slack.slack_integration import handle_slack_event
-from src.data_ingestion.manual_upload import handle_manual_upload
+# from src.data_ingestion.manual_upload import handle_manual_upload  # COMMENTED OUT - Not used
 from src.utils.config import Config
 
 load_dotenv()
 logging.basicConfig(level=logging.INFO)
+# Suppress Google API cache warnings
+logging.getLogger('googleapiclient.discovery_cache').setLevel(logging.ERROR)
 
-app = FastAPI(title="AI Agent System", version="1.0.0")
+app = FastAPI(title="AI Agent System - E. Alex & E. Lazar", version="1.0.0")
 
 config = Config()
 
@@ -31,32 +33,32 @@ async def slack_events(request: Request):
     try:
         response = await handle_slack_event(request, config)
         if isinstance(response, dict):
-            return response  # JSON for url_verification
+            return response  # JSON dict for url_verification
         else:
             return PlainTextResponse(response)
     except Exception as e:
+        logging.error(f"Slack event error: {str(e)}")
         return PlainTextResponse(f"Error: {str(e)}")
 
-@app.post("/admin/upload/{agent}")
-async def upload_file(
-    agent: str,
-    file: UploadFile = File(...),
-    password: str = Form(...),
-    client_id: str = Form(None)  # For client success agent
-):
-    """
-    Admin endpoint for manual file uploads.
-    Requires admin password.
-    For client success agent, client_id must be provided.
-    """
-    if password != config.admin_password:
-        raise HTTPException(status_code=403, detail="Unauthorized")
-
-    try:
-        result = await handle_manual_upload(agent, file, client_id, config)
-        return {"message": result}
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+# COMMENTED OUT - Manual uploads not used, only Google Drive
+# @app.post("/admin/upload/{agent}")
+# async def upload_file(
+#     agent: str,
+#     file: UploadFile = File(...),
+#     password: str = Form(...),
+#     client_id: str = Form(None)
+# ):
+#     """
+#     Admin endpoint for manual file uploads.
+#     Requires admin password.
+#     """
+#     if password != config.admin_password:
+#         raise HTTPException(status_code=403, detail="Unauthorized")
+#     try:
+#         result = await handle_manual_upload(agent, file, client_id, config)
+#         return {"message": result}
+#     except Exception as e:
+#         raise HTTPException(status_code=400, detail=str(e))
 
 if __name__ == "__main__":
     import uvicorn
