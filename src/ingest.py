@@ -24,8 +24,8 @@ async def main():
         ELazarAgent(config),
     ]
     for agent in agents:
-    await agent.ingest_data()
-    print(f"Data ingested for {agent.__class__.__name__}")
+        await agent.ingest_data()
+        print(f"Data ingested for {agent.__class__.__name__}")
     
     # COMMENTED OUT - Client Success not used
     # clients = ["client1", "client2"]

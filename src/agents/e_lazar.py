@@ -285,13 +285,13 @@ class ELazarAgent:
             logging.error("GOOGLE_DRIVE_FOLDER_E_LAZAR not configured! Skipping Google Drive ingestion.")
             logging.error("Please set GOOGLE_DRIVE_FOLDER_E_LAZAR in your .env file")
         else:
-        logging.info(f"Google Drive folder ID: {folder_id}")
+         logging.info(f"Google Drive folder ID: {folder_id}")
         
         try:
             if not folder_id:
                 logging.warning("Skipping Google Drive ingestion - folder ID not configured")
             else:
-            files = await self.drive.get_files(folder_id, recursive=True)
+                files = await self.drive.get_files(folder_id, recursive=True)
             logging.info(f"Found {len(files)} files in Google Drive")
             
             drive_ingested = 0
